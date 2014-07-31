@@ -211,11 +211,22 @@ validate_headers(#katt_response{headers=E0}, #katt_response{headers=A0}) ->
 validate_body(#katt_response{body=E}, #katt_response{body=ActBody, headers=ActHeaders}) ->
   NormalizedHeaders = [{string:to_lower(K),V} || {K,V} <- ActHeaders],
   ContentType = proplists:get_value("content-type", NormalizedHeaders, ""),
-  B = case is_json_content_type(ContentType) andalso is_binary(ActBody) of
-        true -> parse_json(ActBody);
-        false -> ActBody
+  B = case is_json_content_type(ContentType) andalso attempt_json_parse(ActBody) of
+        false -> ActBody;
+        true -> parse_json(ActBody)
   end,
   compare_struct("/body", E, B, ?MATCH_ANY).
+
+-spec attempt_json_parse(binary() | list()) -> boolean().
+attempt_json_parse(Str) when is_binary(Str) ->
+    true;
+attempt_json_parse([]) ->
+    false;
+attempt_json_parse(Str) ->
+    case io_lib:printable_list(Str) orelse io_lib:printable_unicode_list(Str) of
+        true -> true;
+        false -> false
+    end.
 
 %% Compare non-empty JSON structured types; defer to simple comparison otherwise
 compare_struct(_ParentKey, ?MATCH_ANY, _A, _Unexpected)                     ->
