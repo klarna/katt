@@ -208,8 +208,14 @@ validate_headers(#katt_response{headers=E0}, #katt_response{headers=A0}) ->
 
 %% Bodies are also allowed to be a superset of expected body, if the parseFun
 %% returns a structure.
-validate_body(#katt_response{body=E}, #katt_response{body=A}) ->
-  compare_struct("/body", E, A, ?MATCH_ANY).
+validate_body(#katt_response{body=E}, #katt_response{body=ActBody, headers=ActHeaders}) ->
+  NormalizedHeaders = [{string:to_lower(K),V} || {K,V} <- ActHeaders],
+  ContentType = proplists:get_value("content-type", NormalizedHeaders, ""),
+  B = case is_json_content_type(ContentType) andalso is_binary(ActBody) of
+        true -> parse_json(ActBody);
+        false -> ActBody
+  end,
+  compare_struct("/body", E, B, ?MATCH_ANY).
 
 %% Compare non-empty JSON structured types; defer to simple comparison otherwise
 compare_struct(_ParentKey, ?MATCH_ANY, _A, _Unexpected)                     ->
