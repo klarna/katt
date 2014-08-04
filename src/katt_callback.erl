@@ -217,12 +217,14 @@ validate_body(#katt_response{body=E}, #katt_response{body=ActBody, headers=ActHe
   end,
   compare_struct("/body", E, B, ?MATCH_ANY).
 
--spec attempt_json_parse(binary() | list()) -> boolean().
+-spec attempt_json_parse(body()) -> boolean().
 attempt_json_parse(Str) when is_binary(Str) ->
     true;
+attempt_json_parse(null) ->
+    false;
 attempt_json_parse([]) ->
     false;
-attempt_json_parse(Str) ->
+attempt_json_parse(Str) when is_list(Str) ->
     case io_lib:printable_list(Str) orelse io_lib:printable_unicode_list(Str) of
         true -> true;
         false -> false
