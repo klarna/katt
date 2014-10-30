@@ -1,3 +1,6 @@
+**This repository is no longer actively maintained, please see https://github.com/for-GET/katt**
+
+
 # KATT [![Build Status][2]][1]
 
 KATT (Klarna API Testing Tool) is an HTTP-based API testing tool for Erlang.
