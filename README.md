@@ -16,16 +16,16 @@ The builtin validator supports basic text validation and more advanced validatio
 
 The validator makes use of a few tags with special meaning:
 
-`"{{_}}"`  
+`"{{_}}"`
 Match anything (i.e. no real validation, only check existence).
 
-`"{{unexpected}}"`  
+`"{{unexpected}}"`
 Match nothing (i.e. no real validation, only check lack of existence)
 
-`"{{>key}}"`  
+`"{{>key}}"`
 Store value of the whole string (key must be unique within testcase)
 
-`"{{<key}}"`  
+`"{{<key}}"`
 Recall stored value.
 
 The `"{{_}}"` tag can also be used as a JSON object's property in order to

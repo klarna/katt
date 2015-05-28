@@ -204,7 +204,18 @@ validate_status(#katt_response{status=E}, #katt_response{status=A}) ->
 validate_headers(#katt_response{headers=E0}, #katt_response{headers=A0}) ->
   E = [{katt_util:to_lower(K), V} || {K, V} <- E0],
   A = [{katt_util:to_lower(K), V} || {K, V} <- A0],
-  compare_struct("/headers", E, A, ?MATCH_ANY).
+  [validate_cookie_headers(E, A) | validate_regular_headers(E, A)].
+
+validate_cookie_headers(E, A) ->
+  ExpectedHeaders = proplists:get_all_values("set-cookie", E),
+  ActualHeaders = proplists:get_all_values("set-cookie", A),
+  compare_struct("/set-cookie", ExpectedHeaders, ActualHeaders, ?MATCH_ANY).
+
+validate_regular_headers(E, A) ->
+  ExpectedHeaders0 = lists:usort(proplists:get_keys(E)),
+  ExpectedHeaders = lists:keydelete("set-cookie", 1, ExpectedHeaders0),
+  Get = fun proplists:get_value/2,
+  [compare(K, Get(K, E), Get(K, A)) || K <- ExpectedHeaders].
 
 %% Bodies are also allowed to be a superset of expected body, if the parseFun
 %% returns a structure.
