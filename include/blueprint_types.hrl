@@ -15,7 +15,7 @@
 
 -record(katt_response,    { status = 200                :: integer()
                           , headers = []                :: [http_header()]
-                          , body = null                 :: binary() | null
+                          , body = null                 :: list() | binary() | null
                           }).
 
 -record(katt_transaction, { description = null          :: utf8_string()
