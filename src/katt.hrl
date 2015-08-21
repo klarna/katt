@@ -63,10 +63,10 @@
 -type transaction_result()  :: { string()
                                , params()
                                , #katt_request{}
-                               , #katt_response{}
+                               , response()
                                , validation_result()
                                }.
--type validation_result()   :: pass | {fail, reason(), details()}.
+-type validation_result()   :: {pass|fail, details()}.
 
 -type description()         :: string().
 -type response()            :: #katt_response{} | {error, any()}.
