@@ -120,7 +120,7 @@ request(R = #katt_request{}, Params, Callbacks) ->
               , #katt_response{}
               , params()
               , callbacks()
-              ) -> {pass, details()} | {fail, details()}.
+              ) -> validation_result().
 validate( Expected = #katt_response{}
         , Actual = #katt_response{}
         , _Params
